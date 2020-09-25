@@ -25,7 +25,6 @@ class ClientFixtures extends Fixture
         for ($i = 0; $i < 20; $i++) {
             $client = new Client();
             $client->setEmail($faker->companyEmail)
-                ->setCreatedAt($faker->dateTime())
                 ->setCompany($faker->company)
                 ->setPassword($this->encoder->encodePassword($client, 'password'))
                 ->setRoles(['ROLE_USER']);
@@ -36,7 +35,6 @@ class ClientFixtures extends Fixture
 
         $user = new Client();
         $user->setEmail('user@bilemo.com')
-                ->setCreatedAt(new \DateTime())
                 ->setCompany('BileMo')
                 ->setPassword($this->encoder->encodePassword($user, 'user'))
                 ->setRoles(['ROLE_USER']);
@@ -46,7 +44,6 @@ class ClientFixtures extends Fixture
 
         $admin = new Client();
         $admin->setEmail('admin@bilemo.com')
-                ->setCreatedAt(new \DateTime())
                 ->setCompany('BileMo')
                 ->setPassword($this->encoder->encodePassword($client, 'admin'))
                 ->setRoles(['ROLE_ADMIN']);

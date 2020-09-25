@@ -51,7 +51,6 @@ class ProductFixtures extends Fixture
             $product = new Product();
             $product->setName($faker->word)
                 ->setDescription($faker->paragraph)
-                ->setCreatedAt($date)
                 ->setLength($faker->randomFloat(2,12,15))
                 ->setWidth($faker->randomFloat(2,6,10))
                 ->setHeight($faker->randomFloat(2,0.7,1.5))

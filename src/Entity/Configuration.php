@@ -3,13 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Since;
-use JMS\Serializer\Annotation\Expose;
-use JMS\Serializer\Annotation\Groups;
 use App\Repository\ConfigurationRepository;
 use Doctrine\Common\Collections\Collection;
-use JMS\Serializer\Annotation\ExclusionPolicy;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -36,6 +34,7 @@ class Configuration
      *      message="This value should be an integer value"
      * )
      * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $memory;
 
@@ -51,7 +50,7 @@ class Configuration
      *      maxMessage="Manufacturer name should not contain more than 50 characters"
      * )
      * 
-     * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $color;
 
@@ -70,6 +69,7 @@ class Configuration
      *     message="This value is not a valid float number"
      * )
      * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $price;
 
@@ -84,6 +84,8 @@ class Configuration
      * @ORM\OneToMany(targetEntity=Image::class, mappedBy="configuration", orphanRemoval=true, cascade={"persist"})
      * @Assert\NotBlank
      * @Assert\Valid
+     * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $images;
 

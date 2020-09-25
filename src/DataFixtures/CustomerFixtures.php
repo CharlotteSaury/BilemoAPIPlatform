@@ -17,7 +17,6 @@ class CustomerFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 100; $i++) {
             $customer = new Customer();
             $customer->setEmail($faker->email)
-                ->setCreatedAt($faker->dateTime())
                 ->setFirstname($faker->firstName)
                 ->setLastname($faker->lastName);
             for ($j = 1; $j < mt_rand(1, 3); $j++) {
@@ -29,7 +28,6 @@ class CustomerFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 5; $i++) {
             $customer = new Customer();
             $customer->setEmail($faker->email)
-                ->setCreatedAt($faker->dateTime())
                 ->setFirstname($faker->firstName)
                 ->setLastname($faker->lastName);
             for ($j = 1; $j < mt_rand(1, 3); $j++) {

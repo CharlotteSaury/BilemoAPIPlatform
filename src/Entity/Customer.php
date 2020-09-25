@@ -2,22 +2,31 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Since;
-use JMS\Serializer\Annotation\Expose;
-use JMS\Serializer\Annotation\Groups;
 use App\Repository\CustomerRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
-use JMS\Serializer\Annotation\ExclusionPolicy;
 use Doctrine\Common\Collections\ArrayCollection;
-use Hateoas\Configuration\Annotation as Hateoas;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * 
- * @ApiResource
+ * @ApiResource(
+ * collectionOperations={"get", "post"},
+ *      itemOperations={"get", "put", "delete"},
+ *      normalizationContext={"groups"={"Customer:read"}},
+ *      denormalizationContext={"groups"={"Customer:write"}},
+ *      attributes={
+ *          "pagination_items_per_page"=10
+ *      }
+ * )
+ * 
+ * @ApiFilter(SearchFilter::class, properties={"email": "partial"})
  * 
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
  * @UniqueEntity(fields={"email"}, message="This customer already exists")
@@ -31,6 +40,8 @@ class Customer
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * 
+     * @Groups({"Customer:read"})
      */
     private $id;
 
@@ -39,6 +50,8 @@ class Customer
      * 
      * @Assert\NotBlank
      * @Assert\Email
+     * 
+     * @Groups({"Customer:read","Customer:write"})
      * 
      */
     private $email;
@@ -52,6 +65,7 @@ class Customer
      *      max="30"
      * )
      * 
+     * @Groups({"Customer:read","Customer:write"})
      */
     private $firstname;
 
@@ -64,12 +78,14 @@ class Customer
      *      max="30"
      * )
      * 
+     * @Groups({"Customer:read","Customer:write"})
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="datetime")
      * 
+     * @Groups({"Customer:read"})
      */
     private $createdAt;
 
@@ -82,6 +98,7 @@ class Customer
     public function __construct()
     {
         $this->clients = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -128,13 +145,6 @@ class Customer
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     /**

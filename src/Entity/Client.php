@@ -3,24 +3,32 @@
 namespace App\Entity;
 
 use DateTime;
-use Swagger\Annotations as SWG;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ClientRepository;
-use JMS\Serializer\Annotation\Since;
-use JMS\Serializer\Annotation\Expose;
-use JMS\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
-use JMS\Serializer\Annotation\ExclusionPolicy;
 use Doctrine\Common\Collections\ArrayCollection;
-use Hateoas\Configuration\Annotation as Hateoas;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * 
- * @ApiResource
+ * @ApiResource(
+ *      collectionOperations={"get", "post"},
+ *      itemOperations={"get", "put", "delete"},
+ *      normalizationContext={"groups"={"Client:read"}},
+ *      denormalizationContext={"groups"={"Client:write"}},
+ *      attributes={
+ *          "pagination_items_per_page"=10
+ *      }
+ * )
+ * 
+ * @ApiFilter(SearchFilter::class, properties={"company": "partial"})
  * 
  * @ORM\Entity(repositoryClass=ClientRepository::class)
  * @UniqueEntity(fields={"email"}, message="This client already exists")
@@ -34,6 +42,7 @@ class Client implements UserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * 
+     * @Groups({"Client:read"})
      */
     private $id;
 
@@ -42,6 +51,8 @@ class Client implements UserInterface
      * 
      * @Assert\NotBlank
      * @Assert\Email
+     * 
+     * @Groups({"Client:read", "Client:write"})
      * 
      */
     private $email;
@@ -57,18 +68,22 @@ class Client implements UserInterface
      *      maxMessage="Password should not contain more than 30 characters"
      * )
      * 
-     * 
+     * @Groups({"Client:write"})
      */
     private $password;
 
     /**
      * @ORM\Column(type="datetime")
      * 
+     * @Groups({"Client:read"})
+     * 
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="json")
+     * 
+     * @Groups({"Client:write"})
      * 
      */
     private $roles = [];
@@ -84,7 +99,7 @@ class Client implements UserInterface
      *      maxMessage="Company name should not contain more than 50 characters"
      * )
      * 
-     * 
+     * @Groups({"Client:read", "Client:write"})
      * 
      */
     private $company;
@@ -92,13 +107,12 @@ class Client implements UserInterface
     /**
      * @ORM\ManyToMany(targetEntity=Customer::class, inversedBy="clients")
      * 
-     * 
      */
     private $customers;
 
     public function __construct()
     {
-        $this->createdAt = new DateTime();
+        $this->createdAt = new DateTimeImmutable();
         $this->customers = new ArrayCollection();
 
     }
@@ -140,13 +154,6 @@ class Client implements UserInterface
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getRoles(): ?array

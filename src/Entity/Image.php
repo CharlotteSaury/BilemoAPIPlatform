@@ -4,10 +4,8 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ImageRepository;
-use JMS\Serializer\Annotation\Since;
-use JMS\Serializer\Annotation\Expose;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\ExclusionPolicy;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -26,6 +24,8 @@ class Image
      * @ORM\Column(type="string", length=255)
      * 
      * @Assert\Url
+     * 
+     * @Groups({"Product:read", "Product:write"})
      * 
      */
     private $url;

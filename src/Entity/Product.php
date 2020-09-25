@@ -3,21 +3,30 @@
 namespace App\Entity;
 
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Since;
 use App\Repository\ProductRepository;
-use JMS\Serializer\Annotation\Expose;
-use JMS\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use JMS\Serializer\Annotation\ExclusionPolicy;
 use Doctrine\Common\Collections\ArrayCollection;
-use Hateoas\Configuration\Annotation as Hateoas;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * 
- * @ApiResource
+ * @ApiResource(
+ *      collectionOperations={"get", "post"},
+ *      itemOperations={"get", "delete"},
+ *      normalizationContext={"groups"={"Product:read"}},
+ *      denormalizationContext={"groups"={"Product:write"}},
+ *      attributes={
+ *          "pagination_items_per_page"=10
+ *      }
+ * )
+ * @ApiFilter(SearchFilter::class, properties={"name": "partial"})
  * 
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  * @UniqueEntity(fields={"name"}, message="This product already exists.")
@@ -33,6 +42,8 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * 
+     * @Groups({"Product:read"})
      */
     private $id;
 
@@ -46,6 +57,8 @@ class Product
      *      minMessage="Product name must contain at least 2 characters",
      *      maxMessage="Product name should not contain more than 50 characters"
      * )
+     * 
+     * @Groups({"Product:read", "Product:write"})
      * 
      */
     private $name;
@@ -61,6 +74,8 @@ class Product
      *      maxMessage="Product description should not contain more than 3000 characters"
      * )
      * 
+     * @Groups({"Product:read", "Product:write"})
+     * 
      */
     private $description;
 
@@ -75,13 +90,14 @@ class Product
      *      maxMessage="Manufacturer name should not contain more than 50 characters"
      * )
      * 
-     * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $manufacturer;
 
     /**
      * @ORM\Column(type="datetime")
      * 
+     * @Groups({"Product:read"})
      */
     private $createdAt;
 
@@ -99,6 +115,7 @@ class Product
      *     message="This value is not a valid float number"
      * )
      * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $screen;
 
@@ -115,7 +132,7 @@ class Product
      *     message="This value is not a valid float number"
      * )
      * 
-     * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $das;
 
@@ -133,6 +150,7 @@ class Product
      *     message="This value is not a valid float number"
      * )
      * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $weight;
 
@@ -150,6 +168,7 @@ class Product
      *     message="This value is not a valid float number"
      * )
      * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $length;
 
@@ -167,6 +186,7 @@ class Product
      *     message="This value is not a valid float number"
      * )
      * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $width;
 
@@ -184,7 +204,7 @@ class Product
      *     message="This value is not a valid float number"
      * )
      * 
-     * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $height;
 
@@ -197,7 +217,7 @@ class Product
      *      message="This value should be a boolean"
      * )
      * 
-     * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $wifi;
 
@@ -210,7 +230,7 @@ class Product
      *      message="This value should be a boolean"
      * )
      * 
-     * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $video4k;
 
@@ -223,6 +243,7 @@ class Product
      *      message="This value should be a boolean"
      * )
      * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $bluetooth;
 
@@ -235,7 +256,7 @@ class Product
      *      message="This value should be a boolean"
      * )
      * 
-     * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $camera;
 
@@ -249,14 +270,14 @@ class Product
      *      minMessage = "You must specify at least one configuration")
      * @Assert\Valid
      * 
-     * 
+     * @Groups({"Product:read", "Product:write"})
      */
     private $configurations;
 
     public function __construct()
     {
         $this->configurations = new ArrayCollection();
-        $this->createdAt = new DateTime();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -291,13 +312,6 @@ class Product
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getScreen(): ?string

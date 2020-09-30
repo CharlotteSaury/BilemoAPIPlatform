@@ -20,7 +20,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * 
  * @ApiResource(
  *      collectionOperations={"get", "post"},
- *      itemOperations={"get", "put", "delete"},
+ *      itemOperations={
+ *          "get"={
+ *              "normalization_context"={"groups"={"client:read", "client:item:get"}},
+ *          }, 
+ *          "put", 
+ *          "delete"
+ *      },
  *      normalizationContext={"groups"={"Client:read"}},
  *      denormalizationContext={"groups"={"Client:write"}},
  *      attributes={
@@ -42,7 +48,7 @@ class Client implements UserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * 
-     * @Groups({"Client:read"})
+     * @Groups({"Client:read", "client:item:get"})
      */
     private $id;
 
@@ -52,7 +58,7 @@ class Client implements UserInterface
      * @Assert\NotBlank
      * @Assert\Email
      * 
-     * @Groups({"Client:read", "Client:write"})
+     * @Groups({"Client:read", "Client:write", "client:item:get"})
      * 
      */
     private $email;
@@ -75,15 +81,13 @@ class Client implements UserInterface
     /**
      * @ORM\Column(type="datetime")
      * 
-     * @Groups({"Client:read"})
+     * @Groups({"Client:read", "client:item:get"})
      * 
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="json")
-     * 
-     * @Groups({"Client:write"})
      * 
      */
     private $roles = [];
@@ -99,13 +103,15 @@ class Client implements UserInterface
      *      maxMessage="Company name should not contain more than 50 characters"
      * )
      * 
-     * @Groups({"Client:read", "Client:write"})
+     * @Groups({"Client:read", "Client:write", "client:item:get", "Customer:item:get"})
      * 
      */
     private $company;
 
     /**
      * @ORM\ManyToMany(targetEntity=Customer::class, inversedBy="clients")
+     * 
+     * @Groups({"client:item:get"})
      * 
      */
     private $customers;
@@ -114,6 +120,7 @@ class Client implements UserInterface
     {
         $this->createdAt = new DateTimeImmutable();
         $this->customers = new ArrayCollection();
+        $this->roles = ['ROLE_USER'];
 
     }
 

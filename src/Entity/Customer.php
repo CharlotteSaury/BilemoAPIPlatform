@@ -18,7 +18,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * 
  * @ApiResource(
  * collectionOperations={"get", "post"},
- *      itemOperations={"get", "put", "delete"},
+ *      itemOperations={
+ *          "get"={
+ *              "normalization_context"={"groups"={"Customer:read", "Customer:item:get"}},
+ *          }, 
+ *          "put", 
+ *          "delete"},
  *      normalizationContext={"groups"={"Customer:read"}},
  *      denormalizationContext={"groups"={"Customer:write"}},
  *      attributes={
@@ -41,7 +46,7 @@ class Customer
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * 
-     * @Groups({"Customer:read"})
+     * @Groups({"Customer:read", "client:item:get"})
      */
     private $id;
 
@@ -51,7 +56,7 @@ class Customer
      * @Assert\NotBlank
      * @Assert\Email
      * 
-     * @Groups({"Customer:read","Customer:write"})
+     * @Groups({"Customer:read","Customer:write", "client:item:get"})
      * 
      */
     private $email;
@@ -65,7 +70,7 @@ class Customer
      *      max="30"
      * )
      * 
-     * @Groups({"Customer:read","Customer:write"})
+     * @Groups({"Customer:read","Customer:write", "client:item:get"})
      */
     private $firstname;
 
@@ -78,20 +83,21 @@ class Customer
      *      max="30"
      * )
      * 
-     * @Groups({"Customer:read","Customer:write"})
+     * @Groups({"Customer:read","Customer:write", "client:item:get"})
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="datetime")
      * 
-     * @Groups({"Customer:read"})
+     * @Groups({"Customer:read", "client:item:get"})
      */
     private $createdAt;
 
     /**
      * @ORM\ManyToMany(targetEntity=Client::class, mappedBy="customers")
      * 
+     * @Groups({"Customer:item:get"})
      */
     private $clients;
 

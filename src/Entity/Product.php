@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProductRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -271,6 +272,7 @@ class Product
      * @Assert\Valid
      * 
      * @Groups({"Product:read", "Product:write"})
+     * 
      */
     private $configurations;
 
@@ -314,12 +316,12 @@ class Product
         return $this->createdAt;
     }
 
-    public function getScreen(): ?string
+    public function getScreen(): ?float
     {
         return $this->screen;
     }
 
-    public function setScreen(string $screen): self
+    public function setScreen(float $screen): self
     {
         $this->screen = $screen;
 
@@ -435,9 +437,9 @@ class Product
     }
 
     /**
-     * @return ArrayCollection|Configuration[]
+     * @return Collection|Configuration[]
      */
-    public function getConfigurations(): ArrayCollection
+    public function getConfigurations(): Collection
     {
         return $this->configurations;
     }

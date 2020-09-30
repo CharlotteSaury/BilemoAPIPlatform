@@ -24,7 +24,7 @@ class Configuration
     private $id;
 
     /**
-     * @ORM\Column(type="integer", length=255)
+     * @ORM\Column(type="integer")
      * 
      * @Assert\NotNull
      * @Assert\NotBlank
@@ -99,12 +99,12 @@ class Configuration
         return $this->id;
     }
 
-    public function getMemory(): ?string
+    public function getMemory(): ?int
     {
         return $this->memory;
     }
 
-    public function setMemory(string $memory): self
+    public function setMemory(int $memory): self
     {
         $this->memory = $memory;
 

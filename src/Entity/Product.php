@@ -17,7 +17,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * 
  * @ApiResource(
  *      attributes={
  *          "security"="is_granted('ROLE_USER')",
@@ -25,7 +24,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      },
  *      collectionOperations={
  *          "get"={
- *              "cacheHeaders"={"max_age"=60, "shared_max_age"=120, "vary"={"Authorization", "Accept-Language"}}
+ *              "cacheHeaders"={"max_age"=60, "shared_max_age"=120, "public"=true, "vary"={"Authorization", "Accept-Language"}}
  *          }, 
  *          "post"={
  *              "security"="is_granted('ROLE_ADMIN')"

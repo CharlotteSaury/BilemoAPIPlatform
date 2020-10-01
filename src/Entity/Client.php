@@ -46,7 +46,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Client implements UserInterface
 {
-    const ATTRIBUTES = ['email', 'company'];
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -83,6 +82,7 @@ class Client implements UserInterface
 
     /**
      * @Groups({"Client:write"})
+     * @SerializedName("password")
      *
      */
     private $plainPassword;

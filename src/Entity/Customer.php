@@ -17,18 +17,29 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * 
  * @ApiResource(
- * collectionOperations={"get", "post"},
+ *         attributes={
+ *             "pagination_items_per_page"=10,
+ *             "security"="is_granted('ROLE_USER')"
+ *         },
+ *         collectionOperations={
+ *          "get"={
+ *              "security"="is_granted('MANAGE', object)"
+ *          }, 
+ *          "post"
+ *      },
  *      itemOperations={
  *          "get"={
- *              "normalization_context"={"groups"={"Customer:read", "Customer:item:get"}},
+ *              "normalization_context"={"groups"={"Customer:read", "Customer:item:get"}}
  *          }, 
- *          "put", 
- *          "delete"},
+ *          "put"={
+ *              "security"="is_granted('MANAGE', object)"
+ *          }, 
+ *          "delete"={
+ *              "security"="is_granted('MANAGE', object)"
+ *          }
+ *      },
  *      normalizationContext={"groups"={"Customer:read"}},
  *      denormalizationContext={"groups"={"Customer:write"}},
- *      attributes={
- *          "pagination_items_per_page"=10
- *      }
  * )
  * 
  * @ApiFilter(SearchFilter::class, properties={"email": "partial"})
@@ -163,7 +174,7 @@ class Customer
 
     public function addClient(Client $client): self
     {
-        if($this->clients == null){
+        if ($this->clients == null) {
             $this->clients = new ArrayCollection();
         }
         if (!$this->clients->contains($client)) {

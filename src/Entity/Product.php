@@ -19,13 +19,24 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * 
  * @ApiResource(
- *      collectionOperations={"get", "post"},
- *      itemOperations={"get", "delete"},
- *      normalizationContext={"groups"={"Product:read"}},
- *      denormalizationContext={"groups"={"Product:write"}},
  *      attributes={
+ *          "security"="is_granted('ROLE_USER')",
  *          "pagination_items_per_page"=10
- *      }
+ *      },
+ *      collectionOperations={
+ *          "get", 
+ *          "post"={
+ *              "security"="is_granted('ROLE_ADMIN')"
+ *          }
+ *      },
+ *      itemOperations={
+ *          "get", 
+ *          "delete"={
+ *              "security"="is_granted('ROLE_ADMIN')"
+ *          }
+ *      },
+ *      normalizationContext={"groups"={"Product:read"}},
+ *      denormalizationContext={"groups"={"Product:write"}}
  * )
  * @ApiFilter(SearchFilter::class, properties={"name": "partial"})
  * 

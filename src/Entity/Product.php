@@ -24,7 +24,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          "pagination_items_per_page"=10
  *      },
  *      collectionOperations={
- *          "get", 
+ *          "get"={
+ *              "cacheHeaders"={"max_age"=60, "shared_max_age"=120, "vary"={"Authorization", "Accept-Language"}}
+ *          }, 
  *          "post"={
  *              "security"="is_granted('ROLE_ADMIN')"
  *          }

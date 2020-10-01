@@ -27,7 +27,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      },
  *      itemOperations={
  *          "get"={
- *              "normalization_context"={"groups"={"Customer:read", "Customer:item:get"}}
+ *              "normalization_context"={"groups"={"Customer:read", "Customer:item:get"}},
+ *              "security"="is_granted('MANAGE', object)"
  *          }, 
  *          "put"={
  *              "security"="is_granted('MANAGE', object)"

@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -25,7 +26,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      },
  *      collectionOperations={
  *          "get", 
- *          "post"
+ *          "post"={
+ *              "validation_groups"={"Default", "create"}
+ *          }
  *      },
  *      itemOperations={
  *          "get"={
@@ -69,21 +72,20 @@ class Client implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * 
-     * @Assert\NotBlank
-     * @Assert\Length(
-     *      min="6",
-     *      max="30",
-     *      minMessage="Password must contain at least 6 characters",
-     *      maxMessage="Password should not contain more than 30 characters"
-     * )
-     * 
      */
     private $password;
 
     /**
      * @Groups({"Client:write"})
      * @SerializedName("password")
-     *
+     * @Assert\NotBlank(groups={"create"})
+     * @Assert\Length(
+     *      min="6",
+     *      max="30",
+     *      minMessage="Password must contain at least 6 characters",
+     *      maxMessage="Password should not contain more than 30 characters",
+     *      groups={"create"}
+     * )
      */
     private $plainPassword;
 

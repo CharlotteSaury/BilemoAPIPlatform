@@ -22,9 +22,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *             "security"="is_granted('ROLE_USER')"
  *         },
  *         collectionOperations={
- *          "get"={
- *              "security"="is_granted('MANAGE', object)"
- *          }, 
+ *          "get", 
  *          "post"
  *      },
  *      itemOperations={
@@ -45,13 +43,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ApiFilter(SearchFilter::class, properties={"email": "partial"})
  * 
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
- * @UniqueEntity(fields={"email"}, message="This customer already exists")
  * 
  */
 class Customer
 {
-    const ATTRIBUTES = ['email', 'firstname', 'lastname'];
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

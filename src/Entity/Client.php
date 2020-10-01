@@ -78,9 +78,14 @@ class Client implements UserInterface
      *      maxMessage="Password should not contain more than 30 characters"
      * )
      * 
-     * @Groups({"Client:write"})
      */
     private $password;
+
+    /**
+     * @Groups({"Client:write"})
+     *
+     */
+    private $plainPassword;
 
     /**
      * @ORM\Column(type="datetime")
@@ -239,5 +244,18 @@ class Client implements UserInterface
      */
     public function eraseCredentials()
     {
+        $this->plainPassword = null;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
     }
 }
